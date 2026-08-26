@@ -1,0 +1,203 @@
+{
+  "pages": {
+    "main": {
+      "hints": {
+        "redrawing": "Redimensionando...",
+        "switching": "Alternando..."
+      }
+    },
+    "preference": {
+      "title": "Preferências",
+      "cat": {
+        "title": "Gato",
+        "labels": {
+          "modelSettings": "Configurações do Modelo",
+          "mirrorMode": "Modo Espelho",
+          "mouseMirror": "Espelho do Mouse",
+          "ignoreMouse": "Ignorar Eventos do Mouse",
+          "windowSettings": "Configurações da Janela",
+          "passThrough": "Janela Transparente",
+          "alwaysOnTop": "Sempre no Topo",
+          "keepInScreen": "Manter na Tela",
+          "windowSize": "Tamanho da Janela",
+          "windowRadius": "Raio da Janela",
+          "opacity": "Opacidade",
+          "motionSound": "Som de Ação",
+          "behavior": "Movimentos e Expressões",
+          "autoReleaseDelay": "Atraso de Liberação Automática",
+          "hideOnHover": "Ocultar ao Passar o Mouse",
+          "maxFPS": "Taxa Máxima de Quadros"
+        },
+        "hints": {
+          "mirrorMode": "Quando ativado, o modelo será invertido horizontalmente.",
+          "mouseMirror": "Quando ativado, o mouse espelhará o movimento da mão.",
+          "ignoreMouse": "Quando ativado, o modelo não responderá a eventos do mouse. Útil para o modo teclado ou modo controle.",
+          "motionSound": "Quando ativado, o modelo reproduzirá efeitos sonoros correspondentes ao executar ações (se existirem).",
+          "behavior": "Quando ativado, movimentos e expressões podem ser configurados e acionados.",
+          "passThrough": "Quando ativado, a janela não afetará operações em outros aplicativos.",
+          "alwaysOnTop": "Quando ativado, a janela sempre ficará acima de outros aplicativos.",
+          "keepInScreen": "Quando ativado, a janela permanece automaticamente dentro dos limites da tela.",
+          "windowSize": "Mova o mouse para a borda da janela ou segure Shift e arraste com o botão direito para redimensionar.",
+          "autoReleaseDelay": "Devido ao Windows não capturar eventos de liberação de certas teclas de nível do sistema, elas serão automaticamente tratadas como liberadas após um tempo limite.",
+          "hideOnHover": "Quando ativado, a janela se oculta automaticamente ao passar o mouse. Você pode definir um atraso; 0 significa ocultar imediatamente.",
+          "maxFPS": "Limitar a taxa máxima de quadros para renderização do modelo. Reduzir a taxa de quadros pode diminuir o uso de CPU/GPU."
+        }
+      },
+      "general": {
+        "title": "Geral",
+        "labels": {
+          "appSettings": "Configurações do aplicativo",
+          "launchOnStartup": "Iniciar na inicialização",
+          "showTaskbarIcon": "Mostrar ícone na barra de tarefas",
+          "showTrayIcon": "Mostrar ícone na bandeja",
+          "appearanceSettings": "Configurações de aparência",
+          "themeMode": "Tema",
+          "language": "Idiomas",
+          "updateSettings": "Configurações de atualização",
+          "autoCheckUpdate": "Verificar atualizações automaticamente",
+          "permissionsSettings": "Configurações de Permissões",
+          "inputMonitoringPermission": "Permissão de Monitoramento de Entrada"
+        },
+        "options": {
+          "auto": "Sistema",
+          "lightMode": "Claro",
+          "darkMode": "Escuro"
+        },
+        "hints": {
+          "showTaskbarIcon": "Uma vez ativado, você pode capturar a janela via OBS Studio.",
+          "showTrayIcon": "Quando ativado, o ícone do aplicativo é exibido na bandeja do sistema.",
+          "inputMonitoringPermission": "Ative a permissão de monitoramento de entrada para receber eventos de teclado e mouse do sistema para responder às suas ações.",
+          "inputMonitoringPermissionGuide": "Se a permissão já estiver ativada, primeiro selecione-a e clique no botão \"-\" para removê-la. Em seguida, adicione-a novamente manualmente e reinicie o aplicativo para garantir que a permissão entre em vigor."
+        },
+        "status": {
+          "authorized": "Autorizado",
+          "authorize": "Ir para Ativar"
+        },
+        "buttons": {
+          "openNow": "Abrir Agora",
+          "openLater": "Abrir Mais Tarde"
+        }
+      },
+      "model": {
+        "title": "Modelo",
+        "labels": {
+          "deleteModel": "Excluir modelo"
+        },
+        "hints": {
+          "deleteSuccess": "Excluído com sucesso",
+          "deleteModel": "Tem certeza de que deseja excluir este modelo?",
+          "importSuccess": "Importação bem-sucedida",
+          "clickOrDragToImport": "Clique ou arraste para importar"
+        },
+        "tooltips": {
+          "createModel": "Criar modelo",
+          "convertModel": "Converter modelo",
+          "moreModels": "Mais modelos"
+        },
+        "behaviorModal": {
+          "title": "Movimentos e Expressões",
+          "labels": {
+            "motion": "Movimento",
+            "expression": "Expressão",
+            "motionIndex": "Movimento {index}",
+            "motionGroupIndex": "Grupo de Movimento {index}",
+            "expressionIndex": "Expressão {index}"
+          }
+        }
+      },
+      "multiplayer": {
+        "title": "Multijogador",
+        "labels": { "connection": "Conexão", "endpoint": "Endereço do servidor", "name": "Nome do jogador", "roomCode": "Código da sala", "room": "Sala atual", "streamMode": "Modo de transmissão", "members": "Participantes", "actions": "Ações", "you": "Você" },
+        "hints": { "endpoint": "Servidores remotos de produção devem usar WSS.", "name": "Deixe em branco para gerar um nome aleatório.", "invalidEndpoint": "Informe um endereço WS válido; servidores remotos devem usar WSS.", "copied": "Código da sala copiado." },
+        "placeholders": { "randomName": "Aleatório se vazio", "roomCode": "Código de 8 caracteres" },
+        "buttons": { "create": "Criar sala", "join": "Entrar", "copy": "Copiar", "leave": "Sair da sala" },
+        "errors": { "CONNECTION_FAILED": "Não foi possível conectar ao servidor.", "NAME_TAKEN": "Este nome já está em uso.", "ROOM_FULL": "A sala está cheia.", "ROOM_LIMIT_REACHED": "O servidor atingiu o limite de salas.", "ROOM_NOT_FOUND": "Sala não encontrada.", "SESSION_EXPIRED": "A sessão de reconexão expirou.", "INVALID_NAME": "Use de 1 a 24 caracteres sem caracteres de controle." }
+      },
+      "shortcut": {
+        "title": "Atalhos",
+        "labels": {
+          "toggleCat": "Mostrar/Ocultar Gato",
+          "togglePreferences": "Abrir Preferências",
+          "mirrorMode": "Modo Espelho",
+          "passThrough": "Janela Transparente",
+          "alwaysOnTop": "Sempre no Topo"
+        },
+        "hints": {
+          "toggleCat": "Alternar a visibilidade da janela do gato.",
+          "togglePreferences": "Alternar a visibilidade da janela de preferências.",
+          "mirrorMode": "Alternar o modo espelho do gato.",
+          "passThrough": "Alternar se a janela do gato é clicável.",
+          "alwaysOnTop": "Alternar se a janela do gato permanece no topo."
+        }
+      },
+      "about": {
+        "title": "Sobre",
+        "labels": {
+          "aboutApp": "Sobre o Aplicativo",
+          "appLog": "Logs do Aplicativo",
+          "appInfo": "Informações do Aplicativo",
+          "openSource": "Código Aberto"
+        },
+        "hints": {
+          "appInfo": "Copiar informações do aplicativo para incluir em relatórios de bugs.",
+          "copySuccess": "Copiado com sucesso"
+        },
+        "buttons": {
+          "checkUpdate": "Verificar atualizações",
+          "copy": "Copiar",
+          "feedbackIssues": "Reportar Problema",
+          "viewLog": "Ver Logs"
+        }
+      }
+    }
+  },
+  "components": {
+    "shortcut": {
+      "hints": {
+        "pressRecordShortcut": "Pressione as teclas para gravar atalho",
+        "clickRecordShortcut": "Clique para gravar atalho"
+      }
+    },
+    "updateApp": {
+      "title": "Nova versão encontrada 🥳",
+      "labels": {
+        "updateVersion": "Versão: ",
+        "updateTime": "Hora da atualização: ",
+        "changelog": "Registro de alterações: "
+      },
+      "hints": {
+        "checkingUpdates": "Verificando atualizações...",
+        "alreadyLatest": "Você já está na versão mais recente 🎉"
+      },
+      "buttons": {
+        "updateNow": "Atualizar Agora",
+        "updateLater": "Atualizar mais tarde"
+      }
+    }
+  },
+  "composables": {
+    "useAppMenu": {
+      "labels": {
+        "preference": "Preferências...",
+        "hideCat": "Ocultar Gato",
+        "showCat": "Mostrar Gato",
+        "passThrough": "Janela Transparente",
+        "windowSize": "Tamanho da Janela",
+        "opacity": "Opacidade",
+        "restartApp": "Reiniciar",
+        "quitApp": "Sair"
+      }
+    },
+    "useTray": {
+      "checkUpdate": "Verificar atualizações",
+      "openSource": "Código Fonte"
+    }
+  },
+  "utils": {
+    "live2d": {
+      "hints": {
+        "notFound": "Arquivo de configuração principal do modelo não encontrado. Verifique se os arquivos do modelo estão completos."
+      }
+    }
+  }
+}

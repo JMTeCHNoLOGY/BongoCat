@@ -1,0 +1,32 @@
+html {
+  --uno: select-none overscroll-none antialiased;
+
+  color-scheme: light;
+
+  body {
+    --uno: transition-opacity-300;
+  }
+
+  &.dark {
+    color-scheme: dark;
+  }
+
+  img {
+    -webkit-user-drag: none;
+  }
+
+  button {
+    outline: none !important;
+  }
+
+  .ant-card {
+    .ant-card-actions {
+      > li {
+        --uno: flex items-center justify-center;
+        > span {
+          --uno: inline-flex items-center justify-center min-w-unset;
+        }
+      }
+    }
+  }
+}

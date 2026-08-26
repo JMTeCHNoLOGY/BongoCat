@@ -1,0 +1,33 @@
+services:
+  bongocat-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bongocat-server:1.1.0
+    container_name: bongocat-server
+    command:
+      - --listen=:8080
+      - --max-rooms=2
+      - --max-players-per-room=8
+      - --stream-mode=raw
+      - --max-events-per-second=512
+      - --continuous-hz=20
+      - --max-message-bytes=16384
+      - --resume-grace=15s
+    ports:
+      - 127.0.0.1:18080:8080
+    restart: unless-stopped
+    read_only: true
+    user: "65532:65532"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 128m
+    cpus: 1.0
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
