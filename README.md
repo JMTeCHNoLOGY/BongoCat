@@ -29,6 +29,14 @@ BongoCat 是一款基于 Vue 3、Tauri 和 Live2D 的跨平台互动桌宠，支
 
 构建产物发布在 [GitHub Releases](https://github.com/JMTeCHNoLOGY/BongoCat/releases)。如果当前尚无可用版本，请按照下方开发说明从源码运行。
 
+每个版本同时提供以下安装包：
+
+- macOS：ARM64、x86_64（DMG）
+- Windows：ARM64、x86_64（NSIS EXE）
+- Linux：ARM64、x86_64（DEB、RPM）
+
+发布包未进行 Apple Developer ID 或 Windows 商业证书签名，系统首次运行时可能显示安全提示。每个 Release 都附带 `SHA256SUMS.txt` 校验文件。
+
 ## 本地开发
 
 前端与桌面应用命令在仓库根目录运行：
@@ -63,6 +71,8 @@ pnpm build
 cargo test --manifest-path src-tauri/Cargo.toml
 cd server && go test ./...
 ```
+
+维护者可在版本号和提交准备完成后运行 `pnpm release:github`。脚本会推送对应版本标签，由 GitHub Actions 并行构建所有平台与架构，并在全部产物验证成功后公开 Release。
 
 ## 贡献
 

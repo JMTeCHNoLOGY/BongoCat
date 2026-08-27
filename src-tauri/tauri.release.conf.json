@@ -1,0 +1,16 @@
+{
+  "bundle": {
+    "createUpdaterArtifacts": false,
+    "macOS": {
+      "signingIdentity": "-"
+    }
+  },
+  "plugins": {
+    "updater": {
+      "dangerousInsecureTransportProtocol": false,
+      "endpoints": [
+        "https://github.com/JMTeCHNoLOGY/BongoCat/releases/latest/download/latest.json"
+      ]
+    }
+  }
+}

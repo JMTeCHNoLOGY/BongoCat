@@ -1,108 +1,201 @@
 name: BongoCat Release
 
+run-name: Release ${{ github.ref_name }}
+
 on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CI: 'true'
+  CARGO_TERM_COLOR: always
 
 jobs:
   create-release:
-    runs-on: ubuntu-latest
+    name: Create draft release
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    outputs:
+      release_id: ${{ steps.release.outputs.release_id }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set output
-        id: vars
-        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - name: Checkout repository
+        uses: actions/checkout@v6
 
-      - name: Setup node
-        uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
 
-      - name: Generate changelog
-        id: create_release
-        run: npx changelogithub --draft --name ${{ steps.vars.outputs.tag }}
+      - name: Validate tag and create draft
+        id: release
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          expected_tag="v${version}"
+          if [[ "${GITHUB_REF_NAME}" != "${expected_tag}" ]]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match package version ${expected_tag}." >&2
+            exit 1
+          fi
+
+          if ! gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            gh release create "${GITHUB_REF_NAME}" \
+              --draft \
+              --verify-tag \
+              --title "BongoCat ${GITHUB_REF_NAME}" \
+              --generate-notes
+          fi
+
+          release_id="$(gh api \
+            "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}" \
+            --jq '.id')"
+          echo "release_id=${release_id}" >> "${GITHUB_OUTPUT}"
 
   build-app:
+    name: Build ${{ matrix.name }}
     needs: create-release
+    runs-on: ${{ matrix.runner }}
     permissions:
       contents: write
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: macos-latest
+          - name: macOS ARM64
+            runner: macos-15
+            platform: macos
             target: aarch64-apple-darwin
-          - platform: macos-latest
+            bundles: dmg
+          - name: macOS x86_64
+            runner: macos-15-intel
+            platform: macos
             target: x86_64-apple-darwin
-
-          - platform: windows-latest
-            target: x86_64-pc-windows-msvc
-          - platform: windows-latest
-            target: i686-pc-windows-msvc
-          - platform: windows-latest
+            bundles: dmg
+          - name: Windows ARM64
+            runner: windows-11-arm
+            platform: windows
             target: aarch64-pc-windows-msvc
-
-          - platform: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
-          - platform: ubuntu-22.04-arm
+            bundles: nsis
+          - name: Windows x86_64
+            runner: windows-2022
+            platform: windows
+            target: x86_64-pc-windows-msvc
+            bundles: nsis
+          - name: Linux ARM64 DEB and RPM
+            runner: ubuntu-22.04-arm
+            platform: linux
             target: aarch64-unknown-linux-gnu
+            bundles: deb,rpm
+          - name: Linux x86_64 DEB and RPM
+            runner: ubuntu-22.04
+            platform: linux
+            target: x86_64-unknown-linux-gnu
+            bundles: deb,rpm
 
-    runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - uses: pnpm/action-setup@v3
-        with:
-          version: latest
+        uses: actions/checkout@v6
 
-      - name: Install rust target
-        run: rustup target add ${{ matrix.target }}
-
-      - name: Install dependencies (ubuntu only)
-        if: startsWith(matrix.platform, 'ubuntu')
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'linux'
+        shell: bash
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev libudev-dev patchelf xdg-utils
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            libudev-dev \
+            patchelf \
+            rpm \
+            xdg-utils
 
-      - name: Install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
         with:
-          workspaces: target
+          version: 11.19.0
 
-      - name: Sync node version and setup cache
-        uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
 
-      - name: Install front-end dependencies
+      - name: Install Rust target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache Rust build output
+        uses: swatinem/rust-cache@v2
+        with:
+          shared-key: release-${{ matrix.target }}
+
+      - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build the app
-        uses: tauri-apps/tauri-action@v0
+      - name: Build and upload installers
+        uses: tauri-apps/tauri-action@v1
         env:
-          CI: false
+          GITHUB_TOKEN: ${{ github.token }}
           PLATFORM: ${{ matrix.platform }}
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: BongoCat ${{ needs.create-release.outputs.APP_VERSION }}
-          releaseBody: ''
-          releaseDraft: true
-          prerelease: false
-          args: --target ${{ matrix.target }}
+          releaseId: ${{ needs.create-release.outputs.release_id }}
+          retryAttempts: 1
+          uploadUpdaterJson: false
+          uploadUpdaterSignatures: false
+          releaseAssetNamePattern: '[name]_[version]_[platform]_[arch][setup][ext]'
+          args: >-
+            --target ${{ matrix.target }}
+            --bundles ${{ matrix.bundles }}
+            --config src-tauri/tauri.release.conf.json
+
+  publish-release:
+    name: Publish release
+    needs:
+      - create-release
+      - build-app
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir release-assets
+          gh release download "${GITHUB_REF_NAME}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --dir release-assets
+
+      - name: Verify platform coverage and create checksums
+        shell: bash
+        run: |
+          [[ "$(find release-assets -maxdepth 1 -type f -name '*.dmg' | wc -l)" -ge 2 ]]
+          [[ "$(find release-assets -maxdepth 1 -type f -name '*.exe' | wc -l)" -ge 2 ]]
+          [[ "$(find release-assets -maxdepth 1 -type f -name '*.deb' | wc -l)" -ge 2 ]]
+          [[ "$(find release-assets -maxdepth 1 -type f -name '*.rpm' | wc -l)" -ge 2 ]]
+          (
+            cd release-assets
+            sha256sum -- * > SHA256SUMS.txt
+          )
+
+      - name: Upload checksums and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${GITHUB_REF_NAME}" \
+            release-assets/SHA256SUMS.txt \
+            --repo "${GITHUB_REPOSITORY}" \
+            --clobber
+          gh release edit "${GITHUB_REF_NAME}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --draft=false \
+            --latest

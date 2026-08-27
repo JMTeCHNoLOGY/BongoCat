@@ -19,6 +19,7 @@
     "tauri": "tauri",
     "lint": "eslint --fix src",
     "package:local": "bash scripts/package-local.sh",
+    "release:github": "bash scripts/release-github.sh",
     "preinstall": "npx only-allow pnpm",
     "prepare": "simple-git-hooks",
     "release": "release-it"

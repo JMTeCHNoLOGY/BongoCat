@@ -54,6 +54,15 @@ pnpm package:local all
 
 若已自行完成测试，可以添加 `--skip-checks`。在 macOS 上首次生成 Windows 包时，脚本会自动准备项目独立的交叉编译工具链；系统需预先安装 `rustup`、LLVM 和 NSIS。
 
+正式发布使用 GitHub Actions 在各平台的原生 ARM64 与 x86_64 运行器上并行构建：
+
+```shell
+pnpm release:github --dry-run
+pnpm release:github
+```
+
+标签必须与 `package.json` 版本一致。全部构建成功后，工作流会上传 macOS DMG、Windows NSIS EXE、Linux DEB/RPM 及 SHA-256 校验文件，并自动公开 Release。
+
 ## Commit 指南
 
 Commit messages 请遵循[conventional-changelog 标准](https://www.conventionalcommits.org/en/v1.0.0/)。
