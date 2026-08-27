@@ -12,6 +12,16 @@ on:
         description: Existing version tag to build and publish
         required: true
         type: string
+      platform:
+        description: Optional platform group to rebuild
+        required: false
+        default: all
+        type: choice
+        options:
+          - all
+          - macos
+          - windows
+          - linux
 
 concurrency:
   group: release-${{ inputs.tag || github.ref }}
@@ -68,6 +78,7 @@ jobs:
   build-app:
     name: Build ${{ matrix.name }}
     needs: create-release
+    if: ${{ inputs.platform == '' || inputs.platform == 'all' || matrix.platform == inputs.platform }}
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: write
@@ -169,6 +180,7 @@ jobs:
 
   publish-release:
     name: Publish release
+    if: ${{ always() && needs.create-release.result == 'success' && needs.build-app.result != 'failure' && needs.build-app.result != 'cancelled' }}
     needs:
       - create-release
       - build-app
