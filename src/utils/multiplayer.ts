@@ -1,6 +1,6 @@
 import type { Language } from '@/stores/general'
 import type { Model, ModelMode } from '@/stores/model'
-import type { PlayerProfile, ProtocolMessage, RoomJoined } from '@/types/multiplayer'
+import type { MemberLatencyPayload, PlayerProfile, ProtocolMessage, RoomJoined } from '@/types/multiplayer'
 
 const WORDS: Record<string, { adjectives: string[], animals: string[] }> = {
   'zh-CN': { adjectives: ['快乐', '勇敢', '安静', '机灵', '软萌'], animals: ['橘猫', '熊猫', '水獭', '兔子', '狐狸'] },
@@ -54,4 +54,28 @@ export function reduceRoomMessage(room: RoomJoined, message: ProtocolMessage) {
     return { ...room, players: room.players.filter(player => player.playerId !== playerId) }
   }
   return room
+}
+
+export function reduceMemberLatencyMessage(latencies: Record<string, number>, message: ProtocolMessage) {
+  if (message.type === 'member_latency') {
+    const { playerId, latencyMs } = message.payload as MemberLatencyPayload
+    const next = { ...latencies }
+    if (latencyMs === null) delete next[playerId]
+    else next[playerId] = latencyMs
+    return next
+  }
+  if (message.type === 'member_left') {
+    const { playerId } = message.payload as { playerId: string }
+    const next = { ...latencies }
+    delete next[playerId]
+    return next
+  }
+  return latencies
+}
+
+export function getLatencyTagColor(latencyMs: number | undefined, online: boolean) {
+  if (!online || latencyMs === undefined) return 'default'
+  if (latencyMs <= 100) return 'green'
+  if (latencyMs <= 200) return 'gold'
+  return 'red'
 }

@@ -167,8 +167,10 @@ useTauriListen<number>(LISTEN_KEY.SET_EXPRESSION, ({ payload }) => {
   live2d.setExpression(payload)
 })
 
-function handleMouseDown() {
-  appWindow.startDragging()
+function handleMouseDown(event: MouseEvent) {
+  if (event.button !== 0) return
+
+  void appWindow.startDragging()
 }
 
 async function handleContextmenu(event: MouseEvent) {
@@ -184,17 +186,17 @@ async function handleContextmenu(event: MouseEvent) {
     ],
   })
 
-  // Temporarily disable always-on-top on Windows so the context menu is not covered
-  if (isWindows && catStore.window.alwaysOnTop) {
-    setAlwaysOnTop(false)
+  const shouldRestoreAlwaysOnTop = isWindows && catStore.window.alwaysOnTop
+
+  try {
+    // Temporarily disable always-on-top on Windows so the context menu is not covered
+    if (shouldRestoreAlwaysOnTop) await setAlwaysOnTop(false)
+
+    await menu.popup()
+  } finally {
+    // Restore always-on-top after the menu is closed
+    if (shouldRestoreAlwaysOnTop) await setAlwaysOnTop(true)
   }
-
-  await menu.popup()
-
-  // Restore always-on-top after the menu is closed
-  if (!isWindows || !catStore.window.alwaysOnTop) return
-
-  setAlwaysOnTop(true)
 }
 
 function handleMouseMove(event: MouseEvent) {

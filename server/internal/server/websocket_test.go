@@ -19,7 +19,7 @@ func TestWebSocketFiveClientsAndInputRelay(t *testing.T) {
 	httpServer := httptest.NewServer(app.Handler())
 	defer httpServer.Close()
 	endpoint := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/v1/ws"
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
 	defer cancel()
 
 	clients := make([]*websocket.Conn, 0, 5)
@@ -59,6 +59,15 @@ func TestWebSocketFiveClientsAndInputRelay(t *testing.T) {
 	}
 	if payload.PlayerID == "" || payload.Event.Kind != "KeyboardPress" || string(payload.Event.Value) != `"A"` {
 		t.Fatalf("unexpected relayed input: %+v", payload)
+	}
+
+	latencyMessage := readUntil(t, ctx, first, protocol.TypeMemberLatency)
+	var latency protocol.MemberLatencyPayload
+	if err := json.Unmarshal(latencyMessage.Payload, &latency); err != nil {
+		t.Fatal(err)
+	}
+	if latency.PlayerID != room.Self.PlayerID || latency.LatencyMS == nil || *latency.LatencyMS < 0 {
+		t.Fatalf("unexpected relayed latency: %+v", latency)
 	}
 }
 

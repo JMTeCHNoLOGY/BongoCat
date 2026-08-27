@@ -107,7 +107,7 @@
       },
       "multiplayer": {
         "title": "Multijogador",
-        "labels": { "connection": "Conexão", "endpoint": "Endereço do servidor", "name": "Nome do jogador", "roomCode": "Código da sala", "room": "Sala atual", "streamMode": "Modo de transmissão", "members": "Participantes", "actions": "Ações", "you": "Você" },
+        "labels": { "connection": "Conexão", "endpoint": "Endereço do servidor", "name": "Nome do jogador", "roomCode": "Código da sala", "room": "Sala atual", "streamMode": "Modo de transmissão", "members": "Participantes", "networkLatency": "Latência de rede", "actions": "Ações", "you": "Você" },
         "hints": { "endpoint": "Servidores remotos de produção devem usar WSS.", "name": "Deixe em branco para gerar um nome aleatório.", "invalidEndpoint": "Informe um endereço WS válido; servidores remotos devem usar WSS.", "copied": "Código da sala copiado." },
         "placeholders": { "randomName": "Aleatório se vazio", "roomCode": "Código de 8 caracteres" },
         "buttons": { "create": "Criar sala", "join": "Entrar", "copy": "Copiar", "leave": "Sair da sala" },

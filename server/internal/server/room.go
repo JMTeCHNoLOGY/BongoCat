@@ -54,6 +54,11 @@ type profileRequest struct {
 	profile protocol.ProfileUpdate
 }
 
+type latencyRequest struct {
+	client    *Client
+	latencyMS int64
+}
+
 type stopIfEmptyRequest struct {
 	result chan bool
 }
@@ -109,6 +114,8 @@ func (room *Room) Run() {
 			room.handleSnapshot(value)
 		case profileRequest:
 			room.handleProfile(value)
+		case latencyRequest:
+			room.handleLatency(value)
 		case stopIfEmptyRequest:
 			empty := len(room.members) == 0
 			value.result <- empty
@@ -160,6 +167,10 @@ func (room *Room) Snapshot(client *Client, snapshot protocol.InputSnapshot) {
 
 func (room *Room) UpdateProfile(client *Client, profile protocol.ProfileUpdate) {
 	room.send(profileRequest{client: client, profile: profile})
+}
+
+func (room *Room) UpdateLatency(client *Client, latencyMS int64) {
+	room.send(latencyRequest{client: client, latencyMS: latencyMS})
 }
 
 func (room *Room) StopIfEmpty() bool {
@@ -267,6 +278,7 @@ func (room *Room) handleLeave(request leaveRequest) bool {
 	current.client = nil
 	current.profile.Online = false
 	room.broadcast(protocol.TypeMemberUpdated, protocol.MemberPayload{Player: current.profile}, nil)
+	room.broadcast(protocol.TypeMemberLatency, protocol.MemberLatencyPayload{PlayerID: playerID, LatencyMS: nil}, nil)
 	resumeToken := current.resumeToken
 	time.AfterFunc(room.resumeGrace, func() {
 		room.send(expireRequest{playerID: playerID, resumeToken: resumeToken})
@@ -310,6 +322,20 @@ func (room *Room) handleProfile(request profileRequest) {
 	current.profile.SkinID = strings.TrimSpace(request.profile.SkinID)
 	current.profile.Mode = request.profile.Mode
 	room.broadcast(protocol.TypeMemberUpdated, protocol.MemberPayload{Player: current.profile}, request.client)
+}
+
+func (room *Room) handleLatency(request latencyRequest) {
+	playerID := request.client.playerIDValue()
+	current := room.members[playerID]
+	if current == nil || current.client != request.client || !current.profile.Online {
+		return
+	}
+
+	latencyMS := max(request.latencyMS, 0)
+	room.broadcast(protocol.TypeMemberLatency, protocol.MemberLatencyPayload{
+		PlayerID:  playerID,
+		LatencyMS: &latencyMS,
+	}, nil)
 }
 
 func (room *Room) removeMember(playerID string) bool {

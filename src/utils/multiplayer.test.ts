@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { Model } from '@/stores/model'
 import type { RoomJoined } from '@/types/multiplayer'
 
-import { generatePlayerName, normalizeRoomCode, reduceRoomMessage, resolveSkinModel, validateMultiplayerEndpoint } from './multiplayer'
+import { generatePlayerName, getLatencyTagColor, normalizeRoomCode, reduceMemberLatencyMessage, reduceRoomMessage, resolveSkinModel, validateMultiplayerEndpoint } from './multiplayer'
 
 const models: Model[] = [
   { id: 'default', skinId: 'builtin:keyboard:v1', path: '/keyboard', mode: 'keyboard', isPreset: true },
@@ -53,5 +53,35 @@ describe('multiplayer helpers', () => {
     expect(offline.players).toHaveLength(2)
     expect(offline.players[1].online).toBe(false)
     expect(reduceRoomMessage(offline, { v: 'v1', type: 'member_left', payload: { playerId: '2' } }).players).toHaveLength(1)
+  })
+
+  it('tracks member latency independently and applies display thresholds', () => {
+    let latencies: Record<string, number> = {}
+    latencies = reduceMemberLatencyMessage(latencies, {
+      v: 'v1',
+      type: 'member_latency',
+      payload: { playerId: '1', latencyMs: 42 },
+    })
+    expect(latencies).toEqual({ 1: 42 })
+    expect(getLatencyTagColor(100, true)).toBe('green')
+    expect(getLatencyTagColor(101, true)).toBe('gold')
+    expect(getLatencyTagColor(200, true)).toBe('gold')
+    expect(getLatencyTagColor(201, true)).toBe('red')
+    expect(getLatencyTagColor(42, false)).toBe('default')
+    expect(getLatencyTagColor(undefined, true)).toBe('default')
+
+    latencies = reduceMemberLatencyMessage(latencies, {
+      v: 'v1',
+      type: 'member_latency',
+      payload: { playerId: '1', latencyMs: null },
+    })
+    expect(latencies).toEqual({})
+
+    latencies = reduceMemberLatencyMessage({ 1: 42, 2: 88 }, {
+      v: 'v1',
+      type: 'member_left',
+      payload: { playerId: '2' },
+    })
+    expect(latencies).toEqual({ 1: 42 })
   })
 })

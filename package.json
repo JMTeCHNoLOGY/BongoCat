@@ -1,12 +1,13 @@
 {
   "name": "bongo-cat",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "private": true,
   "author": {
     "name": "ayangweb",
     "email": "ayangweb@foxmail.com"
   },
+  "license": "MIT",
   "scripts": {
     "dev": "run-s build:icon dev:vite",
     "build": "run-s build:*",

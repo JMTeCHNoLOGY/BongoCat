@@ -17,6 +17,7 @@ const (
 	TypeMemberJoined  = "member_joined"
 	TypeMemberUpdated = "member_updated"
 	TypeMemberLeft    = "member_left"
+	TypeMemberLatency = "member_latency"
 	TypeInput         = "input"
 	TypeSnapshot      = "snapshot"
 	TypeProfileUpdate = "profile_update"
@@ -135,6 +136,11 @@ type MemberPayload struct {
 
 type MemberLeft struct {
 	PlayerID string `json:"playerId"`
+}
+
+type MemberLatencyPayload struct {
+	PlayerID  string `json:"playerId"`
+	LatencyMS *int64 `json:"latencyMs"`
 }
 
 type ProfileUpdate struct {

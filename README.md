@@ -1,5 +1,8 @@
 ![BongoCat](https://socialify.git.ci/ayangweb/BongoCat/image?custom_description=&description=1&font=Source+Code+Pro&forks=1&issues=1&logo=https%3A%2F%2Fgithub.com%2Fayangweb%2FBongoCat%2Fblob%2Fmaster%2Fsrc-tauri%2Fassets%2Flogo-mac.png%3Fraw%3Dtrue&name=1&owner=1&pattern=Floating+Cogs&pulls=1&stargazers=1&theme=Auto)
 
+> [!IMPORTANT]
+> 本仓库基于 [ayangweb/BongoCat v1.1.0](https://github.com/ayangweb/BongoCat/tree/v1.1.0) 二次开发，原项目作者为 [ayangweb](https://github.com/ayangweb)。本分支新增了通过房间码进行联网联机、多人透明窗口、输入事件同步及配套房间服务。原项目的版权声明与 MIT License 均完整保留在 [`LICENSE`](./LICENSE) 中。
+
 <div align="center">
   <div>
     <a href="https://github.com/ayangweb/BongoCat/releases"><img alt="Windows" src="https://img.shields.io/badge/-Windows-blue?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB0PSIxNzI2MzA1OTcxMDA2IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjE1NDgiIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4Ij48cGF0aCBkPSJNNTI3LjI3NTU1MTYxIDk2Ljk3MTAzMDEzdjM3My45OTIxMDY2N2g0OTQuNTEzNjE5NzVWMTUuMDI2NzU3NTN6TTUyNy4yNzU1NTE2MSA5MjguMzIzNTA4MTVsNDk0LjUxMzYxOTc1IDgwLjUyMDI4MDQ5di00NTUuNjc3NDcxNjFoLTQ5NC41MTM2MTk3NXpNNC42NzA0NTEzNiA0NzAuODMzNjgyOTdINDIyLjY3Njg1OTI1VjExMC41NjM2ODE5N2wtNDE4LjAwNjQwNzg5IDY5LjI1Nzc5NzUzek00LjY3MDQ1MTM2IDg0Ni43Njc1OTcwM0w0MjIuNjc2ODU5MjUgOTE0Ljg2MDMxMDEzVjU1My4xNjYzMTcwM0g0LjY3MDQ1MTM2eiIgcC1pZD0iMTU0OSIgZmlsbD0iI2ZmZmZmZiI+PC9wYXRoPjwvc3ZnPg==" /></a>
@@ -61,6 +64,10 @@
 ## 联机开发
 
 本地联调时，先在 `server/` 运行 `go run ./cmd/bongocat-server`，再通过设置页的“联机”栏目创建或加入房间。默认地址为 `ws://127.0.0.1:8080/v1/ws`；远程部署必须通过反向代理提供 WSS。服务端参数与容器部署说明见 [`server/README.md`](server/README.md)。
+
+## 许可证与署名
+
+本项目继续使用 [MIT License](./LICENSE)。原始代码版权归 ayangweb 所有；使用、修改或分发本项目时，请保留原版权声明与许可证文本。上游项目及其 `v1.1.0` 源码可分别在 [ayangweb/BongoCat](https://github.com/ayangweb/BongoCat) 和 [v1.1.0 标签](https://github.com/ayangweb/BongoCat/tree/v1.1.0) 查看。
 
 ## 模型转换
 

@@ -71,7 +71,7 @@ func (client *Client) readLoop(ctx context.Context) {
 }
 
 func (client *Client) writeLoop(ctx context.Context) {
-	ticker := time.NewTicker(15 * time.Second)
+	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
 
 	for {
@@ -89,10 +89,14 @@ func (client *Client) writeLoop(ctx context.Context) {
 			}
 		case <-ticker.C:
 			pingContext, cancel := context.WithTimeout(ctx, 10*time.Second)
+			started := time.Now()
 			err := client.conn.Ping(pingContext)
 			cancel()
 			if err != nil {
 				return
+			}
+			if room := client.roomValue(); room != nil {
+				room.UpdateLatency(client, time.Since(started).Milliseconds())
 			}
 		}
 	}

@@ -85,3 +85,8 @@ export interface SnapshotPayload {
   playerId: string
   snapshot: InputSnapshot
 }
+
+export interface MemberLatencyPayload {
+  playerId: string
+  latencyMs: number | null
+}

@@ -107,7 +107,7 @@
       },
       "multiplayer": {
         "title": "Multiplayer",
-        "labels": { "connection": "Connection", "endpoint": "Server Address", "name": "Player Name", "roomCode": "Room Code", "room": "Current Room", "streamMode": "Stream Mode", "members": "Members", "actions": "Actions", "you": "You" },
+        "labels": { "connection": "Connection", "endpoint": "Server Address", "name": "Player Name", "roomCode": "Room Code", "room": "Current Room", "streamMode": "Stream Mode", "members": "Members", "networkLatency": "Network Latency", "actions": "Actions", "you": "You" },
         "hints": { "endpoint": "Remote production servers must use WSS.", "name": "Leave blank to generate a random name.", "invalidEndpoint": "Enter a valid WS address; remote servers must use WSS.", "copied": "Room code copied." },
         "placeholders": { "randomName": "Random if blank", "roomCode": "8-character code" },
         "buttons": { "create": "Create Room", "join": "Join", "copy": "Copy", "leave": "Leave Room" },

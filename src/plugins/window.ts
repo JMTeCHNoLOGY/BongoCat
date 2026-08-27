@@ -32,7 +32,7 @@ export function hideWindow(label?: WindowLabel) {
 }
 
 export function setAlwaysOnTop(alwaysOnTop: boolean) {
-  invoke(COMMAND.SET_ALWAYS_ON_TOP, { alwaysOnTop })
+  return invoke(COMMAND.SET_ALWAYS_ON_TOP, { alwaysOnTop })
 }
 
 export async function toggleWindowVisible(label?: WindowLabel) {

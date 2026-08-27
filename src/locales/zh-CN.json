@@ -107,7 +107,7 @@
       },
       "multiplayer": {
         "title": "联机",
-        "labels": { "connection": "连接设置", "endpoint": "服务器地址", "name": "玩家名称", "roomCode": "房间码", "room": "当前房间", "streamMode": "数据流模式", "members": "成员", "actions": "操作", "you": "你" },
+        "labels": { "connection": "连接设置", "endpoint": "服务器地址", "name": "玩家名称", "roomCode": "房间码", "room": "当前房间", "streamMode": "数据流模式", "members": "成员", "networkLatency": "网络延迟", "actions": "操作", "you": "你" },
         "hints": { "endpoint": "远程正式服务器必须使用 WSS。", "name": "留空时会按当前语言随机生成。", "invalidEndpoint": "请输入有效的 WS 地址；远程服务器必须使用 WSS。", "copied": "房间码已复制。" },
         "placeholders": { "randomName": "留空随机生成", "roomCode": "8 位房间码" },
         "buttons": { "create": "创建房间", "join": "加入", "copy": "复制", "leave": "离开房间" },

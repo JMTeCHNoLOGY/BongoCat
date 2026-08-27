@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: bongocat-server:1.1.0
+    image: bongocat-server:1.0.0
     container_name: bongocat-server
     command:
       - --listen=:8080
@@ -18,7 +18,7 @@ services:
       - 127.0.0.1:18080:8080
     restart: unless-stopped
     read_only: true
-    user: "65532:65532"
+    user: '65532:65532'
     cap_drop:
       - ALL
     security_opt:
@@ -30,4 +30,4 @@ services:
       driver: json-file
       options:
         max-size: 10m
-        max-file: "3"
+        max-file: '3'

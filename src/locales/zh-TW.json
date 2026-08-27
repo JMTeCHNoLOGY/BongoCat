@@ -107,7 +107,7 @@
       },
       "multiplayer": {
         "title": "連線",
-        "labels": { "connection": "連線設定", "endpoint": "伺服器位址", "name": "玩家名稱", "roomCode": "房間碼", "room": "目前房間", "streamMode": "資料流模式", "members": "成員", "actions": "操作", "you": "你" },
+        "labels": { "connection": "連線設定", "endpoint": "伺服器位址", "name": "玩家名稱", "roomCode": "房間碼", "room": "目前房間", "streamMode": "資料流模式", "members": "成員", "networkLatency": "網路延遲", "actions": "操作", "you": "你" },
         "hints": { "endpoint": "遠端正式伺服器必須使用 WSS。", "name": "留空時會依目前語言隨機產生。", "invalidEndpoint": "請輸入有效的 WS 位址；遠端伺服器必須使用 WSS。", "copied": "房間碼已複製。" },
         "placeholders": { "randomName": "留空隨機產生", "roomCode": "8 位房間碼" },
         "buttons": { "create": "建立房間", "join": "加入", "copy": "複製", "leave": "離開房間" },

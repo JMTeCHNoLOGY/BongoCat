@@ -13,7 +13,7 @@ import { INVOKE_KEY } from '@/constants'
 import { useGeneralStore } from '@/stores/general'
 import { useModelStore } from '@/stores/model'
 import { useMultiplayerStore } from '@/stores/multiplayer'
-import { generatePlayerName, normalizeRoomCode, validateMultiplayerEndpoint } from '@/utils/multiplayer'
+import { generatePlayerName, getLatencyTagColor, normalizeRoomCode, validateMultiplayerEndpoint } from '@/utils/multiplayer'
 
 const store = useMultiplayerStore()
 const modelStore = useModelStore()
@@ -79,6 +79,11 @@ async function copyRoomCode() {
   if (!store.room) return
   await writeText(store.room.roomCode)
   message.success(t('pages.preference.multiplayer.hints.copied'))
+}
+
+function latencyText(playerId: string, online: boolean) {
+  const latency = store.memberLatencies[playerId]
+  return online && latency !== undefined ? `${latency} ms` : '--'
 }
 </script>
 
@@ -178,6 +183,22 @@ async function copyRoomCode() {
         >
           <span>{{ player.name }}{{ player.playerId === store.room.self.playerId ? ` (${$t('pages.preference.multiplayer.labels.you')})` : '' }}</span>
           <span class="ml-1 font-mono opacity-70">· {{ player.playerId }}</span>
+        </Tag>
+      </Flex>
+    </ProListItem>
+
+    <ProListItem :title="$t('pages.preference.multiplayer.labels.networkLatency')">
+      <Flex
+        gap="small"
+        wrap="wrap"
+      >
+        <Tag
+          v-for="player in store.players"
+          :key="player.playerId"
+          :color="getLatencyTagColor(store.memberLatencies[player.playerId], player.online)"
+        >
+          <span>{{ player.name }}</span>
+          <span class="ml-1 font-mono opacity-70">· {{ latencyText(player.playerId, player.online) }}</span>
         </Tag>
       </Flex>
     </ProListItem>

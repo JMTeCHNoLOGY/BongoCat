@@ -107,7 +107,7 @@
       },
       "multiplayer": {
         "title": "Nhiều người chơi",
-        "labels": { "connection": "Kết nối", "endpoint": "Địa chỉ máy chủ", "name": "Tên người chơi", "roomCode": "Mã phòng", "room": "Phòng hiện tại", "streamMode": "Chế độ luồng", "members": "Thành viên", "actions": "Thao tác", "you": "Bạn" },
+        "labels": { "connection": "Kết nối", "endpoint": "Địa chỉ máy chủ", "name": "Tên người chơi", "roomCode": "Mã phòng", "room": "Phòng hiện tại", "streamMode": "Chế độ luồng", "members": "Thành viên", "networkLatency": "Độ trễ mạng", "actions": "Thao tác", "you": "Bạn" },
         "hints": { "endpoint": "Máy chủ từ xa phải dùng WSS.", "name": "Để trống để tạo tên ngẫu nhiên.", "invalidEndpoint": "Nhập địa chỉ WS hợp lệ; máy chủ từ xa phải dùng WSS.", "copied": "Đã sao chép mã phòng." },
         "placeholders": { "randomName": "Ngẫu nhiên nếu trống", "roomCode": "Mã 8 ký tự" },
         "buttons": { "create": "Tạo phòng", "join": "Tham gia", "copy": "Sao chép", "leave": "Rời phòng" },

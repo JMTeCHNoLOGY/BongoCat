@@ -4,7 +4,7 @@ import { computed, ref } from 'vue'
 import type { MultiplayerStatus, ProtocolError, ProtocolMessage, RoomJoined } from '@/types/multiplayer'
 import type { Point } from '@/utils/multiplayer-layout'
 
-import { reduceRoomMessage } from '@/utils/multiplayer'
+import { reduceMemberLatencyMessage, reduceRoomMessage } from '@/utils/multiplayer'
 
 const DEFAULT_ENDPOINT = import.meta.env.VITE_MULTIPLAYER_WS_URL || 'ws://127.0.0.1:8080/v1/ws'
 
@@ -15,6 +15,7 @@ export const useMultiplayerStore = defineStore('multiplayer', () => {
   const room = ref<RoomJoined>()
   const lastError = ref<ProtocolError>()
   const layoutPositions = ref<Record<string, Point>>({})
+  const memberLatencies = ref<Record<string, number>>({})
 
   const connected = computed(() => state.value === 'connected')
   const players = computed(() => [...(room.value?.players ?? [])].sort((left, right) => left.order - right.order))
@@ -23,17 +24,21 @@ export const useMultiplayerStore = defineStore('multiplayer', () => {
     state.value = status.state
     if (status.room) room.value = status.room
     if (status.error) lastError.value = status.error
+    if (status.state !== 'connected') memberLatencies.value = {}
     if (status.state === 'disconnected') room.value = void 0
   }
 
   function applyMessage(message: ProtocolMessage) {
     if (message.type === 'room_joined') {
       room.value = message.payload as RoomJoined
+      memberLatencies.value = {}
       state.value = 'connected'
       lastError.value = void 0
       return
     }
     if (!room.value) return
+
+    memberLatencies.value = reduceMemberLatencyMessage(memberLatencies.value, message)
 
     if (message.type === 'member_joined' || message.type === 'member_updated') {
       room.value = reduceRoomMessage(room.value, message)
@@ -69,6 +74,7 @@ export const useMultiplayerStore = defineStore('multiplayer', () => {
     room,
     lastError,
     layoutPositions,
+    memberLatencies,
     connected,
     players,
     applyStatus,
@@ -78,6 +84,6 @@ export const useMultiplayerStore = defineStore('multiplayer', () => {
   }
 }, {
   tauri: {
-    filterKeys: ['state', 'room', 'lastError'],
+    filterKeys: ['state', 'room', 'lastError', 'memberLatencies'],
   },
 })
