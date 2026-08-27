@@ -75,48 +75,51 @@ jobs:
             --jq '.databaseId')"
           echo "release_id=${release_id}" >> "${GITHUB_OUTPUT}"
 
+  select_build_matrix:
+    name: Select release platforms
+    needs: create-release
+    runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.select.outputs.matrix }}
+    steps:
+      - name: Select requested platform group
+        id: select
+        env:
+          requested_platform: ${{ inputs.platform || 'all' }}
+        shell: bash
+        run: |
+          case "${requested_platform}" in
+            macos)
+              matrix='{"include":[{"name":"macOS ARM64","runner":"macos-15","platform":"macos","target":"aarch64-apple-darwin","bundles":"app,dmg"},{"name":"macOS x86_64","runner":"macos-15-intel","platform":"macos","target":"x86_64-apple-darwin","bundles":"app,dmg"}]}'
+              ;;
+            windows)
+              matrix='{"include":[{"name":"Windows ARM64","runner":"windows-11-arm","platform":"windows","target":"aarch64-pc-windows-msvc","bundles":"nsis"},{"name":"Windows x86_64","runner":"windows-2022","platform":"windows","target":"x86_64-pc-windows-msvc","bundles":"nsis"}]}'
+              ;;
+            linux)
+              matrix='{"include":[{"name":"Linux ARM64 AppImage, DEB and RPM","runner":"ubuntu-22.04-arm","platform":"linux","target":"aarch64-unknown-linux-gnu","bundles":"appimage,deb,rpm"},{"name":"Linux x86_64 AppImage, DEB and RPM","runner":"ubuntu-22.04","platform":"linux","target":"x86_64-unknown-linux-gnu","bundles":"appimage,deb,rpm"}]}'
+              ;;
+            all|'')
+              matrix='{"include":[{"name":"macOS ARM64","runner":"macos-15","platform":"macos","target":"aarch64-apple-darwin","bundles":"app,dmg"},{"name":"macOS x86_64","runner":"macos-15-intel","platform":"macos","target":"x86_64-apple-darwin","bundles":"app,dmg"},{"name":"Windows ARM64","runner":"windows-11-arm","platform":"windows","target":"aarch64-pc-windows-msvc","bundles":"nsis"},{"name":"Windows x86_64","runner":"windows-2022","platform":"windows","target":"x86_64-pc-windows-msvc","bundles":"nsis"},{"name":"Linux ARM64 AppImage, DEB and RPM","runner":"ubuntu-22.04-arm","platform":"linux","target":"aarch64-unknown-linux-gnu","bundles":"appimage,deb,rpm"},{"name":"Linux x86_64 AppImage, DEB and RPM","runner":"ubuntu-22.04","platform":"linux","target":"x86_64-unknown-linux-gnu","bundles":"appimage,deb,rpm"}]}'
+              ;;
+            *)
+              echo "Unsupported platform group: ${requested_platform}" >&2
+              exit 1
+              ;;
+          esac
+          echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
+
   build-app:
     name: Build ${{ matrix.name }}
-    needs: create-release
-    if: ${{ inputs.platform == '' || inputs.platform == 'all' || matrix.platform == inputs.platform }}
+    needs:
+      - create-release
+      - select_build_matrix
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: write
     strategy:
       fail-fast: false
       max-parallel: 1
-      matrix:
-        include:
-          - name: macOS ARM64
-            runner: macos-15
-            platform: macos
-            target: aarch64-apple-darwin
-            bundles: app,dmg
-          - name: macOS x86_64
-            runner: macos-15-intel
-            platform: macos
-            target: x86_64-apple-darwin
-            bundles: app,dmg
-          - name: Windows ARM64
-            runner: windows-11-arm
-            platform: windows
-            target: aarch64-pc-windows-msvc
-            bundles: nsis
-          - name: Windows x86_64
-            runner: windows-2022
-            platform: windows
-            target: x86_64-pc-windows-msvc
-            bundles: nsis
-          - name: Linux ARM64 AppImage, DEB and RPM
-            runner: ubuntu-22.04-arm
-            platform: linux
-            target: aarch64-unknown-linux-gnu
-            bundles: appimage,deb,rpm
-          - name: Linux x86_64 AppImage, DEB and RPM
-            runner: ubuntu-22.04
-            platform: linux
-            target: x86_64-unknown-linux-gnu
-            bundles: appimage,deb,rpm
+      matrix: ${{ fromJSON(needs.select_build_matrix.outputs.matrix) }}
 
     steps:
       - name: Checkout repository
