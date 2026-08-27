@@ -73,6 +73,7 @@ jobs:
       contents: write
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         include:
           - name: macOS ARM64
@@ -95,16 +96,16 @@ jobs:
             platform: windows
             target: x86_64-pc-windows-msvc
             bundles: nsis
-          - name: Linux ARM64 DEB and RPM
+          - name: Linux ARM64 AppImage, DEB and RPM
             runner: ubuntu-22.04-arm
             platform: linux
             target: aarch64-unknown-linux-gnu
-            bundles: deb,rpm
-          - name: Linux x86_64 DEB and RPM
+            bundles: appimage,deb,rpm
+          - name: Linux x86_64 AppImage, DEB and RPM
             runner: ubuntu-22.04
             platform: linux
             target: x86_64-unknown-linux-gnu
-            bundles: deb,rpm
+            bundles: appimage,deb,rpm
 
     steps:
       - name: Checkout repository
@@ -153,11 +154,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           PLATFORM: ${{ matrix.platform }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           releaseId: ${{ needs.create-release.outputs.release_id }}
           retryAttempts: 1
-          uploadUpdaterJson: false
-          uploadUpdaterSignatures: false
+          uploadUpdaterJson: true
+          uploadUpdaterSignatures: true
           releaseAssetNamePattern: '[name]_[version]_[platform]_[arch][setup][ext]'
           args: >-
             --target ${{ matrix.target }}
@@ -187,6 +190,7 @@ jobs:
         run: |
           [[ "$(find release-assets -maxdepth 1 -type f -name '*.dmg' | wc -l)" -ge 2 ]]
           [[ "$(find release-assets -maxdepth 1 -type f -name '*.exe' | wc -l)" -ge 2 ]]
+          [[ "$(find release-assets -maxdepth 1 -type f -name '*.AppImage' | wc -l)" -ge 2 ]]
           [[ "$(find release-assets -maxdepth 1 -type f -name '*.deb' | wc -l)" -ge 2 ]]
           [[ "$(find release-assets -maxdepth 1 -type f -name '*.rpm' | wc -l)" -ge 2 ]]
           (
