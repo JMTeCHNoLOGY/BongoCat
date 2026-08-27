@@ -1,19 +1,26 @@
 name: BongoCat Release
 
-run-name: Release ${{ github.ref_name }}
+run-name: Release ${{ inputs.tag || github.ref_name }}
 
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to build and publish
+        required: true
+        type: string
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ inputs.tag || github.ref }}
   cancel-in-progress: false
 
 env:
   CI: 'true'
   CARGO_TERM_COLOR: always
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 
 jobs:
   create-release:
@@ -40,22 +47,22 @@ jobs:
         run: |
           version="$(node -p "require('./package.json').version")"
           expected_tag="v${version}"
-          if [[ "${GITHUB_REF_NAME}" != "${expected_tag}" ]]; then
-            echo "Tag ${GITHUB_REF_NAME} does not match package version ${expected_tag}." >&2
+          if [[ "${RELEASE_TAG}" != "${expected_tag}" ]]; then
+            echo "Tag ${RELEASE_TAG} does not match package version ${expected_tag}." >&2
             exit 1
           fi
 
-          if ! gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
-            gh release create "${GITHUB_REF_NAME}" \
+          if ! gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            gh release create "${RELEASE_TAG}" \
               --draft \
               --verify-tag \
-              --title "BongoCat ${GITHUB_REF_NAME}" \
+              --title "BongoCat ${RELEASE_TAG}" \
               --generate-notes
           fi
 
-          release_id="$(gh api \
-            "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}" \
-            --jq '.id')"
+          release_id="$(gh release view "${RELEASE_TAG}" \
+            --json databaseId \
+            --jq '.databaseId')"
           echo "release_id=${release_id}" >> "${GITHUB_OUTPUT}"
 
   build-app:
@@ -171,7 +178,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir release-assets
-          gh release download "${GITHUB_REF_NAME}" \
+          gh release download "${RELEASE_TAG}" \
             --repo "${GITHUB_REPOSITORY}" \
             --dir release-assets
 
@@ -191,11 +198,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload "${GITHUB_REF_NAME}" \
+          gh release upload "${RELEASE_TAG}" \
             release-assets/SHA256SUMS.txt \
             --repo "${GITHUB_REPOSITORY}" \
             --clobber
-          gh release edit "${GITHUB_REF_NAME}" \
+          gh release edit "${RELEASE_TAG}" \
             --repo "${GITHUB_REPOSITORY}" \
             --draft=false \
             --latest
