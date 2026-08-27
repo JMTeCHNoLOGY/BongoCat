@@ -80,12 +80,12 @@ jobs:
             runner: macos-15
             platform: macos
             target: aarch64-apple-darwin
-            bundles: dmg
+            bundles: app,dmg
           - name: macOS x86_64
             runner: macos-15-intel
             platform: macos
             target: x86_64-apple-darwin
-            bundles: dmg
+            bundles: app,dmg
           - name: Windows ARM64
             runner: windows-11-arm
             platform: windows
