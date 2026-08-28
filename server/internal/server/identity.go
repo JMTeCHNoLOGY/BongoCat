@@ -34,6 +34,14 @@ func randomRoomCode() (string, error) {
 	return string(code), nil
 }
 
+func randomRoomName() (string, error) {
+	value, err := randomHex(4)
+	if err != nil {
+		return "", err
+	}
+	return "Room-" + strings.ToUpper(value), nil
+}
+
 func normalizeRoomCode(value string) string {
 	return strings.ToUpper(strings.TrimSpace(value))
 }
@@ -48,6 +56,26 @@ func normalizeName(value string) (string, error) {
 	for _, char := range name {
 		if unicode.IsControl(char) {
 			return "", fmt.Errorf("name contains a control character")
+		}
+	}
+
+	return name, nil
+}
+
+func normalizeRoomName(value string) (string, error) {
+	name := norm.NFC.String(strings.TrimSpace(value))
+	if name == "" {
+		return "", nil
+	}
+
+	count := utf8.RuneCountInString(name)
+	if count > 24 {
+		return "", fmt.Errorf("room name must contain at most 24 characters")
+	}
+
+	for _, char := range name {
+		if unicode.IsControl(char) {
+			return "", fmt.Errorf("room name contains a control character")
 		}
 	}
 

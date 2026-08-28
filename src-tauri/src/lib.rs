@@ -6,7 +6,8 @@ use core::{
     gamepad::{start_gamepad_listing, stop_gamepad_listing},
     multiplayer::{
         MultiplayerManager, multiplayer_create_room, multiplayer_join_room, multiplayer_leave_room,
-        multiplayer_status, multiplayer_update_bounds, multiplayer_update_profile,
+        multiplayer_list_rooms, multiplayer_status, multiplayer_update_bounds,
+        multiplayer_update_profile,
     },
     prevent_default, setup,
     skin::compute_skin_id,
@@ -46,6 +47,7 @@ pub fn run() {
             multiplayer_create_room,
             multiplayer_join_room,
             multiplayer_leave_room,
+            multiplayer_list_rooms,
             multiplayer_status,
             multiplayer_update_bounds,
             multiplayer_update_profile,

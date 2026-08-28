@@ -107,11 +107,11 @@
       },
       "multiplayer": {
         "title": "Multiplayer",
-        "labels": { "connection": "Connection", "endpoint": "Server Address", "name": "Player Name", "roomCode": "Room Code", "room": "Current Room", "streamMode": "Stream Mode", "members": "Members", "networkLatency": "Network Latency", "actions": "Actions", "you": "You" },
-        "hints": { "endpoint": "Remote production servers must use WSS.", "name": "Leave blank to generate a random name.", "invalidEndpoint": "Enter a valid WS address; remote servers must use WSS.", "copied": "Room code copied." },
-        "placeholders": { "randomName": "Random if blank", "roomCode": "8-character code" },
-        "buttons": { "create": "Create Room", "join": "Join", "copy": "Copy", "leave": "Leave Room" },
-        "errors": { "CONNECTION_FAILED": "Unable to connect to the server.", "NAME_TAKEN": "This name is already in use.", "ROOM_FULL": "This room is full.", "ROOM_LIMIT_REACHED": "The server has reached its room limit.", "ROOM_NOT_FOUND": "Room not found.", "SESSION_EXPIRED": "The reconnect session has expired.", "INVALID_NAME": "Use 1–24 characters without control characters." }
+        "labels": { "connection": "Connection", "endpoint": "Server Address", "name": "Player Name", "roomName": "Room Name", "roomCode": "Room Code", "availableRooms": "Available Rooms", "room": "Current Room", "streamMode": "Stream Mode", "members": "Members", "networkLatency": "Network Latency", "actions": "Actions", "you": "You" },
+        "hints": { "endpoint": "Remote production servers must use WSS.", "name": "Leave blank to generate a random name.", "roomName": "Used when creating a room; leave blank to generate one.", "roomSummary": "{code} · {count}/{max} players", "noRooms": "There are no rooms on this server.", "invalidEndpoint": "Enter a valid WS address; remote servers must use WSS.", "copied": "Room code copied." },
+        "placeholders": { "randomName": "Random if blank", "roomName": "Generate if blank", "roomCode": "8-character code" },
+        "buttons": { "create": "Create Room", "join": "Join", "refresh": "Refresh", "full": "Full", "copy": "Copy", "leave": "Leave Room" },
+        "errors": { "CONNECTION_FAILED": "Unable to connect to the server.", "NAME_TAKEN": "This name is already in use.", "ROOM_NAME_TAKEN": "This room name is already in use.", "INVALID_ROOM_NAME": "Use 1–24 characters without control characters for the room name.", "ROOM_FULL": "This room is full.", "ROOM_LIMIT_REACHED": "The server has reached its room limit.", "ROOM_NOT_FOUND": "Room not found.", "SESSION_EXPIRED": "The reconnect session has expired.", "INVALID_NAME": "Use 1–24 characters without control characters." }
       },
       "shortcut": {
         "title": "Shortcuts",

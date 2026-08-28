@@ -22,10 +22,18 @@ export interface PlayerProfile {
 
 export interface RoomJoined {
   roomCode: string
+  roomName: string
   self: PlayerProfile
   players: PlayerProfile[]
   resumeToken: string
   policy: RoomPolicy
+}
+
+export interface RoomSummary {
+  roomName: string
+  roomCode: string
+  playerCount: number
+  maxPlayers: number
 }
 
 export interface ProtocolError {

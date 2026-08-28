@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { Model } from '@/stores/model'
 import type { RoomJoined } from '@/types/multiplayer'
 
-import { generatePlayerName, getLatencyTagColor, normalizeRoomCode, reduceMemberLatencyMessage, reduceRoomMessage, resolveSkinModel, validateMultiplayerEndpoint } from './multiplayer'
+import { generatePlayerName, generateRoomName, getLatencyTagColor, normalizeRoomCode, reduceMemberLatencyMessage, reduceRoomMessage, resolveSkinModel, validateMultiplayerEndpoint } from './multiplayer'
 
 const models: Model[] = [
   { id: 'default', skinId: 'builtin:keyboard:v1', path: '/keyboard', mode: 'keyboard', isPreset: true },
@@ -14,6 +14,7 @@ function room(): RoomJoined {
   const self = { playerId: '1', name: 'One', skinId: 'skin', mode: 'standard' as const, order: 1, online: true }
   return {
     roomCode: 'ABC12345',
+    roomName: 'Test Room',
     self,
     players: [self],
     resumeToken: 'token',
@@ -24,6 +25,7 @@ function room(): RoomJoined {
 describe('multiplayer helpers', () => {
   it('generates a localized deterministic name', () => {
     expect(generatePlayerName('en-US', () => 0)).toBe('HappyCat100')
+    expect(generateRoomName('zh-CN', () => 0)).toBe('快乐橘猫100')
   })
 
   it('normalizes room codes and validates endpoints', () => {

@@ -44,14 +44,14 @@ func readClientMessage(t *testing.T, client *Client, messageType string) protoco
 
 func TestHubRoomLimitsNamesResumeAndDestroy(t *testing.T) {
 	hub := NewHub(testConfig())
-	room, _, err := hub.CreateRoom()
+	room, _, err := hub.CreateRoom("First Room")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, _, err := hub.CreateRoom(); err != nil {
+	if _, _, err := hub.CreateRoom("Second Room"); err != nil {
 		t.Fatal(err)
 	}
-	if _, code, err := hub.CreateRoom(); err == nil || code != protocol.ErrorRoomLimit {
+	if _, code, err := hub.CreateRoom("Third Room"); err == nil || code != protocol.ErrorRoomLimit {
 		t.Fatalf("expected room limit, got code=%q err=%v", code, err)
 	}
 
@@ -91,9 +91,49 @@ func TestHubRoomLimitsNamesResumeAndDestroy(t *testing.T) {
 	}
 }
 
+func TestHubListsNamedRoomsInStableOrder(t *testing.T) {
+	value := testConfig()
+	value.MaxRooms = 3
+	value.MaxPlayersPerRoom = 1
+	hub := NewHub(value)
+	second, _, err := hub.CreateRoom("Beta Room")
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, _, err := hub.CreateRoom("Alpha Room")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	member := testClient(hub)
+	if result := second.Join(member, protocol.JoinProfile{Name: "Alice", SkinID: "skin", Mode: "standard"}); result.err != nil {
+		t.Fatal(result.err)
+	}
+
+	if _, code, err := hub.CreateRoom(" beta room "); err == nil || code != protocol.ErrorRoomNameTaken {
+		t.Fatalf("expected duplicate room name, got code=%q err=%v", code, err)
+	}
+
+	summaries := hub.ListRooms()
+	if len(summaries) != 2 {
+		t.Fatalf("expected two rooms, got %d", len(summaries))
+	}
+	if summaries[0].RoomName != "Alpha Room" || summaries[1].RoomName != "Beta Room" {
+		t.Fatalf("rooms were not sorted by name: %+v", summaries)
+	}
+	if summaries[1].PlayerCount != 1 || summaries[1].MaxPlayers != 1 {
+		t.Fatalf("unexpected populated room summary: %+v", summaries[1])
+	}
+
+	second.Leave(member, true)
+	if first.StopIfEmpty() != true {
+		t.Fatal("empty room did not stop")
+	}
+}
+
 func TestRoomRelaysLatencyAndClearsItDuringReconnect(t *testing.T) {
 	hub := NewHub(testConfig())
-	room, _, err := hub.CreateRoom()
+	room, _, err := hub.CreateRoom("Latency Room")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -19,6 +19,10 @@ export function generatePlayerName(language?: Language, random = Math.random) {
   return `${adjective}${animal}${number}`
 }
 
+export function generateRoomName(language?: Language, random = Math.random) {
+  return generatePlayerName(language, random)
+}
+
 export function normalizeRoomCode(value: string) {
   return value.trim().toUpperCase().replace(/[ILOU\s-]/g, '')
 }

@@ -6,7 +6,7 @@ This directory contains the stateless Go room relay. It stores rooms only in mem
 go run ./cmd/bongocat-server
 ```
 
-The default listener is `:8080`; health is available at `GET /healthz` and WebSocket clients connect to `GET /v1/ws`. For a constrained stream:
+The default listener is `:8080`; health is available at `GET /healthz` and WebSocket clients connect to `GET /v1/ws`. WebSocket clients can create named rooms, join by room code, or send `list_rooms` to receive the active room summaries. Room names are unique per running server and rooms are removed when their last member leaves. For a constrained stream:
 
 ```bash
 go run ./cmd/bongocat-server --stream-mode=limited --continuous-hz=20

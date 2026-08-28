@@ -107,11 +107,11 @@
       },
       "multiplayer": {
         "title": "Nhiều người chơi",
-        "labels": { "connection": "Kết nối", "endpoint": "Địa chỉ máy chủ", "name": "Tên người chơi", "roomCode": "Mã phòng", "room": "Phòng hiện tại", "streamMode": "Chế độ luồng", "members": "Thành viên", "networkLatency": "Độ trễ mạng", "actions": "Thao tác", "you": "Bạn" },
-        "hints": { "endpoint": "Máy chủ từ xa phải dùng WSS.", "name": "Để trống để tạo tên ngẫu nhiên.", "invalidEndpoint": "Nhập địa chỉ WS hợp lệ; máy chủ từ xa phải dùng WSS.", "copied": "Đã sao chép mã phòng." },
-        "placeholders": { "randomName": "Ngẫu nhiên nếu trống", "roomCode": "Mã 8 ký tự" },
-        "buttons": { "create": "Tạo phòng", "join": "Tham gia", "copy": "Sao chép", "leave": "Rời phòng" },
-        "errors": { "CONNECTION_FAILED": "Không thể kết nối máy chủ.", "NAME_TAKEN": "Tên này đã được dùng.", "ROOM_FULL": "Phòng đã đầy.", "ROOM_LIMIT_REACHED": "Máy chủ đã đạt giới hạn phòng.", "ROOM_NOT_FOUND": "Không tìm thấy phòng.", "SESSION_EXPIRED": "Phiên kết nối lại đã hết hạn.", "INVALID_NAME": "Tên phải có 1–24 ký tự và không chứa ký tự điều khiển." }
+        "labels": { "connection": "Kết nối", "endpoint": "Địa chỉ máy chủ", "name": "Tên người chơi", "roomName": "Tên phòng", "roomCode": "Mã phòng", "availableRooms": "Phòng hiện có", "room": "Phòng hiện tại", "streamMode": "Chế độ luồng", "members": "Thành viên", "networkLatency": "Độ trễ mạng", "actions": "Thao tác", "you": "Bạn" },
+        "hints": { "endpoint": "Máy chủ từ xa phải dùng WSS.", "name": "Để trống để tạo tên ngẫu nhiên.", "roomName": "Chỉ dùng khi tạo phòng; để trống sẽ tự động tạo.", "roomSummary": "{code} · {count}/{max} người chơi", "noRooms": "Máy chủ hiện không có phòng.", "invalidEndpoint": "Nhập địa chỉ WS hợp lệ; máy chủ từ xa phải dùng WSS.", "copied": "Đã sao chép mã phòng." },
+        "placeholders": { "randomName": "Ngẫu nhiên nếu trống", "roomName": "Tự tạo nếu trống", "roomCode": "Mã 8 ký tự" },
+        "buttons": { "create": "Tạo phòng", "join": "Tham gia", "refresh": "Làm mới", "full": "Đã đầy", "copy": "Sao chép", "leave": "Rời phòng" },
+        "errors": { "CONNECTION_FAILED": "Không thể kết nối máy chủ.", "NAME_TAKEN": "Tên này đã được dùng.", "ROOM_NAME_TAKEN": "Tên phòng này đã được dùng.", "INVALID_ROOM_NAME": "Tên phòng phải có 1–24 ký tự và không chứa ký tự điều khiển.", "ROOM_FULL": "Phòng đã đầy.", "ROOM_LIMIT_REACHED": "Máy chủ đã đạt giới hạn phòng.", "ROOM_NOT_FOUND": "Không tìm thấy phòng.", "SESSION_EXPIRED": "Phiên kết nối lại đã hết hạn.", "INVALID_NAME": "Tên phải có 1–24 ký tự và không chứa ký tự điều khiển." }
       },
       "shortcut": {
         "title": "Phím tắt",

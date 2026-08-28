@@ -107,11 +107,11 @@
       },
       "multiplayer": {
         "title": "Multijogador",
-        "labels": { "connection": "Conexão", "endpoint": "Endereço do servidor", "name": "Nome do jogador", "roomCode": "Código da sala", "room": "Sala atual", "streamMode": "Modo de transmissão", "members": "Participantes", "networkLatency": "Latência de rede", "actions": "Ações", "you": "Você" },
-        "hints": { "endpoint": "Servidores remotos de produção devem usar WSS.", "name": "Deixe em branco para gerar um nome aleatório.", "invalidEndpoint": "Informe um endereço WS válido; servidores remotos devem usar WSS.", "copied": "Código da sala copiado." },
-        "placeholders": { "randomName": "Aleatório se vazio", "roomCode": "Código de 8 caracteres" },
-        "buttons": { "create": "Criar sala", "join": "Entrar", "copy": "Copiar", "leave": "Sair da sala" },
-        "errors": { "CONNECTION_FAILED": "Não foi possível conectar ao servidor.", "NAME_TAKEN": "Este nome já está em uso.", "ROOM_FULL": "A sala está cheia.", "ROOM_LIMIT_REACHED": "O servidor atingiu o limite de salas.", "ROOM_NOT_FOUND": "Sala não encontrada.", "SESSION_EXPIRED": "A sessão de reconexão expirou.", "INVALID_NAME": "Use de 1 a 24 caracteres sem caracteres de controle." }
+        "labels": { "connection": "Conexão", "endpoint": "Endereço do servidor", "name": "Nome do jogador", "roomName": "Nome da sala", "roomCode": "Código da sala", "availableRooms": "Salas disponíveis", "room": "Sala atual", "streamMode": "Modo de transmissão", "members": "Participantes", "networkLatency": "Latência de rede", "actions": "Ações", "you": "Você" },
+        "hints": { "endpoint": "Servidores remotos de produção devem usar WSS.", "name": "Deixe em branco para gerar um nome aleatório.", "roomName": "Usado ao criar uma sala; deixe em branco para gerar um nome.", "roomSummary": "{code} · {count}/{max} jogadores", "noRooms": "Não há salas neste servidor.", "invalidEndpoint": "Informe um endereço WS válido; servidores remotos devem usar WSS.", "copied": "Código da sala copiado." },
+        "placeholders": { "randomName": "Aleatório se vazio", "roomName": "Gerar se vazio", "roomCode": "Código de 8 caracteres" },
+        "buttons": { "create": "Criar sala", "join": "Entrar", "refresh": "Atualizar", "full": "Cheia", "copy": "Copiar", "leave": "Sair da sala" },
+        "errors": { "CONNECTION_FAILED": "Não foi possível conectar ao servidor.", "NAME_TAKEN": "Este nome já está em uso.", "ROOM_NAME_TAKEN": "Este nome de sala já está em uso.", "INVALID_ROOM_NAME": "Use de 1 a 24 caracteres sem caracteres de controle no nome da sala.", "ROOM_FULL": "A sala está cheia.", "ROOM_LIMIT_REACHED": "O servidor atingiu o limite de salas.", "ROOM_NOT_FOUND": "Sala não encontrada.", "SESSION_EXPIRED": "A sessão de reconexão expirou.", "INVALID_NAME": "Use de 1 a 24 caracteres sem caracteres de controle." }
       },
       "shortcut": {
         "title": "Atalhos",

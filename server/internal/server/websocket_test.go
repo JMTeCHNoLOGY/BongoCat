@@ -31,7 +31,7 @@ func TestWebSocketFiveClientsAndInputRelay(t *testing.T) {
 
 	first := dialTestClient(t, ctx, endpoint)
 	clients = append(clients, first)
-	writeTestMessage(t, ctx, first, protocol.TypeCreateRoom, map[string]any{"profile": map[string]any{"name": "Player1", "skinId": "skin", "mode": "standard"}})
+	writeTestMessage(t, ctx, first, protocol.TypeCreateRoom, map[string]any{"roomName": "Test Room", "profile": map[string]any{"name": "Player1", "skinId": "skin", "mode": "standard"}})
 	joined := readUntil(t, ctx, first, protocol.TypeRoomJoined)
 	var room protocol.RoomJoined
 	if err := json.Unmarshal(joined.Payload, &room); err != nil {
@@ -68,6 +68,46 @@ func TestWebSocketFiveClientsAndInputRelay(t *testing.T) {
 	}
 	if latency.PlayerID != room.Self.PlayerID || latency.LatencyMS == nil || *latency.LatencyMS < 0 {
 		t.Fatalf("unexpected relayed latency: %+v", latency)
+	}
+}
+
+func TestWebSocketListsExistingRooms(t *testing.T) {
+	value := testConfig()
+	app := New(value)
+	httpServer := httptest.NewServer(app.Handler())
+	defer httpServer.Close()
+	endpoint := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/v1/ws"
+	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
+	defer cancel()
+
+	creator := dialTestClient(t, ctx, endpoint)
+	defer creator.CloseNow()
+	writeTestMessage(t, ctx, creator, protocol.TypeCreateRoom, map[string]any{
+		"roomName": "Visible Room",
+		"profile":  map[string]any{"name": "Player1", "skinId": "skin", "mode": "standard"},
+	})
+	joined := readUntil(t, ctx, creator, protocol.TypeRoomJoined)
+	var room protocol.RoomJoined
+	if err := json.Unmarshal(joined.Payload, &room); err != nil {
+		t.Fatal(err)
+	}
+	if room.RoomName != "Visible Room" {
+		t.Fatalf("unexpected room name: %q", room.RoomName)
+	}
+
+	lister := dialTestClient(t, ctx, endpoint)
+	defer lister.CloseNow()
+	writeTestMessage(t, ctx, lister, protocol.TypeListRooms, map[string]any{})
+	listed := readUntil(t, ctx, lister, protocol.TypeRoomList)
+	var rooms protocol.RoomList
+	if err := json.Unmarshal(listed.Payload, &rooms); err != nil {
+		t.Fatal(err)
+	}
+	if len(rooms.Rooms) != 1 {
+		t.Fatalf("expected one room, got %+v", rooms.Rooms)
+	}
+	if rooms.Rooms[0].RoomCode != room.RoomCode || rooms.Rooms[0].RoomName != "Visible Room" || rooms.Rooms[0].PlayerCount != 1 || rooms.Rooms[0].MaxPlayers != value.MaxPlayersPerRoom {
+		t.Fatalf("unexpected room summary: %+v", rooms.Rooms[0])
 	}
 }
 

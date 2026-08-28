@@ -11,9 +11,11 @@ const (
 	TypePolicy        = "policy"
 	TypeCreateRoom    = "create_room"
 	TypeJoinRoom      = "join_room"
+	TypeListRooms     = "list_rooms"
 	TypeResumeRoom    = "resume_room"
 	TypeLeaveRoom     = "leave_room"
 	TypeRoomJoined    = "room_joined"
+	TypeRoomList      = "room_list"
 	TypeMemberJoined  = "member_joined"
 	TypeMemberUpdated = "member_updated"
 	TypeMemberLeft    = "member_left"
@@ -28,7 +30,9 @@ const (
 	ErrorAlreadyJoined   = "ALREADY_JOINED"
 	ErrorInvalidMessage  = "INVALID_MESSAGE"
 	ErrorInvalidName     = "INVALID_NAME"
+	ErrorInvalidRoomName = "INVALID_ROOM_NAME"
 	ErrorNameTaken       = "NAME_TAKEN"
+	ErrorRoomNameTaken   = "ROOM_NAME_TAKEN"
 	ErrorNotJoined       = "NOT_JOINED"
 	ErrorRateLimited     = "RATE_LIMITED"
 	ErrorRoomFull        = "ROOM_FULL"
@@ -108,7 +112,8 @@ type JoinProfile struct {
 }
 
 type CreateRoomRequest struct {
-	Profile JoinProfile `json:"profile"`
+	RoomName string      `json:"roomName,omitempty"`
+	Profile  JoinProfile `json:"profile"`
 }
 
 type JoinRoomRequest struct {
@@ -124,10 +129,24 @@ type ResumeRoomRequest struct {
 
 type RoomJoined struct {
 	RoomCode    string          `json:"roomCode"`
+	RoomName    string          `json:"roomName"`
 	Self        PlayerProfile   `json:"self"`
 	Players     []PlayerProfile `json:"players"`
 	ResumeToken string          `json:"resumeToken"`
 	Policy      RoomPolicy      `json:"policy"`
+}
+
+type ListRoomsRequest struct{}
+
+type RoomSummary struct {
+	RoomName    string `json:"roomName"`
+	RoomCode    string `json:"roomCode"`
+	PlayerCount int    `json:"playerCount"`
+	MaxPlayers  int    `json:"maxPlayers"`
+}
+
+type RoomList struct {
+	Rooms []RoomSummary `json:"rooms"`
 }
 
 type MemberPayload struct {

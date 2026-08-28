@@ -68,11 +68,27 @@ pub struct JoinProfile {
 #[serde(rename_all = "camelCase")]
 pub struct RoomJoined {
     pub room_code: String,
+    pub room_name: String,
     #[serde(rename = "self")]
     pub self_player: PlayerProfile,
     pub players: Vec<PlayerProfile>,
     pub resume_token: String,
     pub policy: RoomPolicy,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RoomSummary {
+    pub room_name: String,
+    pub room_code: String,
+    pub player_count: usize,
+    pub max_players: usize,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct RoomList {
+    rooms: Vec<RoomSummary>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -816,6 +832,43 @@ pub async fn multiplayer_join_room(
 }
 
 #[command]
+pub async fn multiplayer_list_rooms(endpoint: String) -> Result<Vec<RoomSummary>, ProtocolError> {
+    validate_endpoint(&endpoint)?;
+
+    let (mut stream, _) = connect_async(&endpoint)
+        .await
+        .map_err(|error| ProtocolError::connection(error.to_string()))?;
+
+    let policy_message = read_protocol(&mut stream).await?;
+    if policy_message.message_type != "policy" {
+        return Err(ProtocolError::connection(
+            "server did not provide a room policy",
+        ));
+    }
+    let _: RoomPolicy = serde_json::from_value(policy_message.payload)
+        .map_err(|error| ProtocolError::connection(error.to_string()))?;
+
+    send_protocol(&mut stream, &ProtocolMessage::new("list_rooms", json!({}))).await?;
+
+    loop {
+        let message = read_protocol(&mut stream).await?;
+        match message.message_type.as_str() {
+            "room_list" => {
+                let room_list = serde_json::from_value::<RoomList>(message.payload)
+                    .map_err(|error| ProtocolError::connection(error.to_string()))?;
+                let _ = stream.close(None).await;
+                return Ok(room_list.rooms);
+            }
+            "error" => {
+                return Err(serde_json::from_value(message.payload)
+                    .unwrap_or_else(|_| ProtocolError::connection("server rejected the request")));
+            }
+            _ => {}
+        }
+    }
+}
+
+#[command]
 pub async fn multiplayer_leave_room(
     app: AppHandle,
     manager: State<'_, MultiplayerManager>,
@@ -896,5 +949,20 @@ mod tests {
         assert!(validate_endpoint("ws://127.0.0.1:8080/v1/ws").is_ok());
         assert!(validate_endpoint("wss://example.com/v1/ws").is_ok());
         assert!(validate_endpoint("ws://example.com/v1/ws").is_err());
+    }
+
+    #[test]
+    fn room_summary_uses_protocol_field_names() {
+        let summary = RoomSummary {
+            room_name: "Test Room".into(),
+            room_code: "ABC12345".into(),
+            player_count: 3,
+            max_players: 8,
+        };
+        let value = serde_json::to_value(summary).unwrap();
+        assert_eq!(value["roomName"], "Test Room");
+        assert_eq!(value["roomCode"], "ABC12345");
+        assert_eq!(value["playerCount"], 3);
+        assert_eq!(value["maxPlayers"], 8);
     }
 }

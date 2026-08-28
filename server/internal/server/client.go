@@ -114,7 +114,7 @@ func (client *Client) handleMessage(message protocol.Message) bool {
 			client.sendError(message.RequestID, protocol.ErrorInvalidMessage, err.Error())
 			return true
 		}
-		room, code, err := client.hub.CreateRoom()
+		room, code, err := client.hub.CreateRoom(payload.RoomName)
 		if err != nil {
 			client.sendError(message.RequestID, code, err.Error())
 			return true
@@ -126,6 +126,16 @@ func (client *Client) handleMessage(message protocol.Message) bool {
 			return true
 		}
 		client.sendMessage(protocol.TypeRoomJoined, message.RequestID, result.joined)
+	case protocol.TypeListRooms:
+		if client.joined() {
+			client.sendError(message.RequestID, protocol.ErrorAlreadyJoined, "leave the current room first")
+			return true
+		}
+		if _, err := protocol.DecodePayload[protocol.ListRoomsRequest](message); err != nil {
+			client.sendError(message.RequestID, protocol.ErrorInvalidMessage, err.Error())
+			return true
+		}
+		client.sendMessage(protocol.TypeRoomList, message.RequestID, protocol.RoomList{Rooms: client.hub.ListRooms()})
 	case protocol.TypeJoinRoom:
 		if client.joined() {
 			client.sendError(message.RequestID, protocol.ErrorAlreadyJoined, "leave the current room first")

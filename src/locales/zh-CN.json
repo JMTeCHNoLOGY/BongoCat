@@ -107,11 +107,11 @@
       },
       "multiplayer": {
         "title": "联机",
-        "labels": { "connection": "连接设置", "endpoint": "服务器地址", "name": "玩家名称", "roomCode": "房间码", "room": "当前房间", "streamMode": "数据流模式", "members": "成员", "networkLatency": "网络延迟", "actions": "操作", "you": "你" },
-        "hints": { "endpoint": "远程正式服务器必须使用 WSS。", "name": "留空时会按当前语言随机生成。", "invalidEndpoint": "请输入有效的 WS 地址；远程服务器必须使用 WSS。", "copied": "房间码已复制。" },
-        "placeholders": { "randomName": "留空随机生成", "roomCode": "8 位房间码" },
-        "buttons": { "create": "创建房间", "join": "加入", "copy": "复制", "leave": "离开房间" },
-        "errors": { "CONNECTION_FAILED": "无法连接服务器。", "NAME_TAKEN": "房间内已有同名玩家。", "ROOM_FULL": "房间人数已满。", "ROOM_LIMIT_REACHED": "服务器房间数量已达上限。", "ROOM_NOT_FOUND": "房间不存在。", "SESSION_EXPIRED": "重连会话已过期。", "INVALID_NAME": "名称须为 1–24 个字符且不能包含控制字符。" }
+        "labels": { "connection": "连接设置", "endpoint": "服务器地址", "name": "玩家名称", "roomName": "房间名", "roomCode": "房间码", "availableRooms": "已有房间", "room": "当前房间", "streamMode": "数据流模式", "members": "成员", "networkLatency": "网络延迟", "actions": "操作", "you": "你" },
+        "hints": { "endpoint": "远程正式服务器必须使用 WSS。", "name": "留空时会按当前语言随机生成。", "roomName": "仅创建房间时使用，留空会自动生成。", "roomSummary": "{code} · {count}/{max} 人", "noRooms": "当前服务器暂无房间。", "invalidEndpoint": "请输入有效的 WS 地址；远程服务器必须使用 WSS。", "copied": "房间码已复制。" },
+        "placeholders": { "randomName": "留空随机生成", "roomName": "留空自动生成", "roomCode": "8 位房间码" },
+        "buttons": { "create": "创建房间", "join": "加入", "refresh": "刷新", "full": "已满", "copy": "复制", "leave": "离开房间" },
+        "errors": { "CONNECTION_FAILED": "无法连接服务器。", "NAME_TAKEN": "房间内已有同名玩家。", "ROOM_NAME_TAKEN": "该房间名已被使用。", "INVALID_ROOM_NAME": "房间名须为 1–24 个字符且不能包含控制字符。", "ROOM_FULL": "房间人数已满。", "ROOM_LIMIT_REACHED": "服务器房间数量已达上限。", "ROOM_NOT_FOUND": "房间不存在。", "SESSION_EXPIRED": "重连会话已过期。", "INVALID_NAME": "名称须为 1–24 个字符且不能包含控制字符。" }
       },
       "shortcut": {
         "title": "快捷键",

@@ -25,6 +25,7 @@ export const INVOKE_KEY = {
   COMPUTE_SKIN_ID: 'compute_skin_id',
   MULTIPLAYER_CREATE_ROOM: 'multiplayer_create_room',
   MULTIPLAYER_JOIN_ROOM: 'multiplayer_join_room',
+  MULTIPLAYER_LIST_ROOMS: 'multiplayer_list_rooms',
   MULTIPLAYER_LEAVE_ROOM: 'multiplayer_leave_room',
   MULTIPLAYER_STATUS: 'multiplayer_status',
   MULTIPLAYER_UPDATE_BOUNDS: 'multiplayer_update_bounds',

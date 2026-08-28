@@ -63,6 +63,10 @@ type stopIfEmptyRequest struct {
 	result chan bool
 }
 
+type summaryRequest struct {
+	result chan protocol.RoomSummary
+}
+
 type roomResult struct {
 	joined *protocol.RoomJoined
 	code   string
@@ -77,12 +81,14 @@ type Room struct {
 	done        chan struct{}
 	members     map[string]*member
 	nextOrder   uint64
+	name        string
 	onEmpty     func(string, *Room)
 }
 
-func NewRoom(code string, policy protocol.RoomPolicy, resumeGrace time.Duration, onEmpty func(string, *Room)) *Room {
+func NewRoom(code, name string, policy protocol.RoomPolicy, resumeGrace time.Duration, onEmpty func(string, *Room)) *Room {
 	return &Room{
 		code:        code,
+		name:        name,
 		policy:      policy,
 		resumeGrace: resumeGrace,
 		commands:    make(chan any, 256),
@@ -123,6 +129,8 @@ func (room *Room) Run() {
 				room.onEmpty(room.code, room)
 				return
 			}
+		case summaryRequest:
+			value.result <- room.summary()
 		}
 	}
 }
@@ -183,6 +191,19 @@ func (room *Room) StopIfEmpty() bool {
 		return stopped
 	case <-room.done:
 		return true
+	}
+}
+
+func (room *Room) Summary() (protocol.RoomSummary, bool) {
+	result := make(chan protocol.RoomSummary, 1)
+	if !room.send(summaryRequest{result: result}) {
+		return protocol.RoomSummary{}, false
+	}
+	select {
+	case summary := <-result:
+		return summary, true
+	case <-room.done:
+		return protocol.RoomSummary{}, false
 	}
 }
 
@@ -359,10 +380,20 @@ func (room *Room) joinedPayload(self protocol.PlayerProfile, resumeToken string)
 	sort.Slice(players, func(left, right int) bool { return players[left].Order < players[right].Order })
 	return protocol.RoomJoined{
 		RoomCode:    room.code,
+		RoomName:    room.name,
 		Self:        self,
 		Players:     players,
 		ResumeToken: resumeToken,
 		Policy:      room.policy,
+	}
+}
+
+func (room *Room) summary() protocol.RoomSummary {
+	return protocol.RoomSummary{
+		RoomName:    room.name,
+		RoomCode:    room.code,
+		PlayerCount: len(room.members),
+		MaxPlayers:  room.policy.MaxPlayers,
 	}
 }
 
